@@ -16,14 +16,6 @@ include(
     "/Users/rbari/Downloads/common_denominator-2020_scimlforbbhs-e19e6808aad2/paper/zenodo/GWaveInversion/SchwarzschildTrainingData",
 )
 
-losses = []
-partition_boundaries = []
-final_paramaters = []
-solutions_list = []
-parameters_list = []
-final_predicted_h_plus = []
-training_h_plus_wave = []
-
 function optimizeBlackHole(;
     learningRate,
     epochsPerIteration,
@@ -33,13 +25,13 @@ function optimizeBlackHole(;
     initial_guess,
 )
 
-    global losses = []
-    global partition_boundaries = []
-    global final_paramaters = []
-    global solutions_list = []
-    global parameters_list = []
-    global final_predicted_h_plus = []
-    global training_h_plus_wave = []
+    losses = []
+    partition_boundaries = []
+    final_paramaters = []
+    solutions_list = []
+    parameters_list = []
+    final_predicted_h_plus = []
+    training_h_plus_wave = []
 
     trainingFraction = totalTrainingPercent # What total fraction of the training data will the neural network learn from?
     p_guess = pe_2_EL(initial_guess[1], initial_guess[2]) # Uses the pe_2_EL function to convert initial guess to (M = 1, E, L)
