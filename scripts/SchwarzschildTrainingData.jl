@@ -80,12 +80,12 @@ function create_Schwarzschild_trainingData(initial_conditions)
     end
 
     M, E, L = pe_2_EL(semirectum, ecc)
-    R = semirectum*M/(1+ecc) # Radius of Orbit
+    R = semirectum*M/(1-ecc) # Radius of Orbit
 
     u0 = [0, R, pi/2, 0, -1*E, 0, 0, L]
-    tspan = (0.0, 20e4)
+    tspan = (0.0, 1e5)
     timestep = 100
-    t_full = 0:timestep:20e4
+    t_full = 0:timestep:1e5
     p_actual = [M, E, L]
 
     prob = ODEProblem(SchwarzschildHamiltonian_GENERIC, u0, tspan, p_actual)

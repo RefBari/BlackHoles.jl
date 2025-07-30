@@ -1,19 +1,33 @@
 using ProgressMeter
 
-include("/Users/rbari/Work/BlackHoles/scripts/NewtonianMetricTest.jl")
+# include("/Users/rbari/Work/BlackHoles/scripts/NewtonianMetricTest.jl")
 
-optimizeBlackHole(
-    learningRate = 5e-3,
-    epochsPerIteration = 16,
-    numberOfCycles = 8,
-    totalTrainingPercent = 0.50,
-    true_parameters = [125, 0.8], # Create training data for these (p_0, e_0) values
-    initial_guess = [125, 0.8],
-)
+# optimizeBlackHole(
+#     learningRate = 5e-3,
+#     epochsPerIteration = 16,
+#     numberOfCycles = 8,
+#     totalTrainingPercent = 0.50,
+#     true_parameters = [125, 0.8], # Create training data for these (p_0, e_0) values
+#     initial_guess = [125, 0.8],
+# )
 
-x = range(6, 15, length = 100)
+x = range(6, 20, length = 100)
 y = (x .- 6) ./ 2
 
+p = plot(
+    x,
+    y,
+    ylims = (0, 1),
+    xlabel = L"p",
+    ylabel = L"e",
+    label = "Separatrix",
+    linewidth = 2,
+    top_margin = 10mm,
+    bottom_margin = 10mm,
+    left_margin = 10mm,
+    right_margin = 10mm,
+)
+display(p)
 p_vals = []
 e_vals = []
 
@@ -39,7 +53,7 @@ function create_sampling_points(grid_size)
     end
 end
 
-create_sampling_points(5)
+create_sampling_points(4)
 
 p_values = p_vals[1]
 e_values = e_vals[1]
@@ -57,7 +71,7 @@ p = plot(
     bottom_margin = 10mm,
     left_margin = 10mm,
     right_margin = 10mm,
-    xlims = (6, 12),
+    xlims = (6, 13),
 )
 
 for i in p_values[2:end]
@@ -72,21 +86,21 @@ end
 M = length(pe_values)
 losses = Vector{Float64}(undef, M)
 display(p)
-@showprogress for i = 1:M
-    p, e = pe_values[i]
-    losses[i] = optimizeBlackHole(
-        learningRate = 5e-3,
-        epochsPerIteration = 16,
-        numberOfCycles = 6,
-        totalTrainingPercent = 0.50,
-        true_parameters = [p, e],
-        initial_guess = [p, e],
-    )
-end
+# @showprogress for i = 1:M
+#     p, e = pe_values[i]
+#     losses[i] = optimizeBlackHole(
+#         learningRate = 5e-3,
+#         epochsPerIteration = 16,
+#         numberOfCycles = 6,
+#         totalTrainingPercent = 0.50,
+#         true_parameters = [p, e],
+#         initial_guess = [p, e],
+#     )
+# end
 
-ps = first.(pe_values)
-es = last.(pe_values)
+# ps = first.(pe_values)
+# es = last.(pe_values)
 
-scatter(ps, es; marker_z = losses, colorbar = true, xlabel = L"p", ylabel = L"e")
+# scatter(ps, es; marker_z = losses, colorbar = true, xlabel = L"p", ylabel = L"e")
 
-display(p)
+# display(p)

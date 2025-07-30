@@ -14,6 +14,15 @@ using ForwardDiff
 using ProgressMeter
 
 include("/Users/rbari/Work/BlackHoles/scripts/SchwarzschildTrainingData.jl")
+plot_font = "Computer Modern"
+default(
+    fontfamily = plot_font,
+    linewidth = 2,
+    framestyle = :box,
+    label = nothing,
+    grid = false,
+)
+Plots.scalefontsizes()
 
 """
 Store all data in these globally defined arrays. 
@@ -142,7 +151,7 @@ function optimizeBlackHole(;
     end
 
     # What will the neural network learn? The following parameters: M, E, L, NN_param
-    R = initial_guess[1]/(1+initial_guess[2])
+    R = initial_guess[1]/(1-initial_guess[2])
     M = p_guess[1]
     E = p_guess[2]
     L = p_guess[3]
@@ -163,7 +172,7 @@ function optimizeBlackHole(;
     p_t_correct = -sqrt(p_t_squared)
 
     u0 = [0, R, π/2, 0, p_t_correct, 0, 0, L]
-    timeLength = 20e4
+    timeLength = 1e5
     tspan = (0.0, timeLength)
     t = 0:timestep:timeLength
 
@@ -227,17 +236,17 @@ function optimizeBlackHole(;
 
         d2h_dt2_loss = d2h_plus_loss + d2h_cross_loss
 
-        loss_value = waveform_loss + 1e4 * dh_dt_loss + 1e8 * d2h_dt2_loss
-        print(
-            "waveform_loss:",
-            waveform_loss,
-            " dh_dt_loss:",
-            dh_dt_loss,
-            "\n\n",
-            " d2h_dt2_loss:",
-            d2h_dt2_loss,
-            "\n\n",
-        )
+        loss_value = waveform_loss + (1e-5) * dh_dt_loss + (1e-5) * d2h_dt2_loss
+        # print(
+        #     "waveform_loss:",
+        #     waveform_loss,
+        #     " dh_dt_loss:",
+        #     dh_dt_loss,
+        #     "\n\n",
+        #     " d2h_dt2_loss:",
+        #     d2h_dt2_loss,
+        #     "\n\n",
+        # )
         loss_value /= n_compare
 
         # println("Training with fraction: ", trainingFraction, ", n_compare: ", n_compare, ", loss: ", loss_value)
@@ -400,42 +409,84 @@ function optimizeBlackHole(;
             particle_x_true = y2_true .* cos.(y4_true)
             particle_y_true = y2_true .* sin.(y4_true)
 
-            orbitalParamsPlot = plot(
+            r_plot = plot(t, y2, label = L"$r$ predicted", title = "\n\nRadial Coordinate")
+            plot!(
                 t,
-                [y1 y2 y3 y4],
-                layout = (2, 2),
-                title = ["Coordinate Time" "Radius" "Equatorial Angle" "Angular Displacement"],
-                xlabel = "Simulation Time",
-                ylabel = [L"t" L"r" L"θ" L"ϕ"],
-                label = "Predicted",
-                ylims = [(0, maximum(t)) (minimum(y2)-1, maximum(y2)+1) (1.35, 1.8) (
-                    0,
-                    maximum(y4),
-                )],
-                bottom_margin = 2mm,
-                top_margin = 2mm,
-                left_margin = 2mm,
-                right_margin = 2mm,
-                linewidth = 1,
+                y2_true,
+                linestyle = :dash,
+                label = L"$r$ true",
+                xlabel = L"$t$",
+                ylabel = L"$r$",
+                bottom_margin = 10mm,
+                top_margin = 10mm,
+                left_margin = 10mm,
+                right_margin = 10mm,
             )
 
-            plot!(t, [y1_true y2_true y3_true y4_true], linestyle = :dash, label = "True")
+            ϕ_plot =
+                plot(t, y4, label = L"$\phi$ predicted", title = "\n\nAngular Coordinate")
+            plot!(
+                t,
+                y4_true,
+                linestyle = :dash,
+                label = L"$\phi$ true",
+                xlabel = L"$t$",
+                ylabel = L"$\phi$",
+                bottom_margin = 10mm,
+                top_margin = 10mm,
+                left_margin = 10mm,
+                right_margin = 10mm,
+            )
 
-            display(orbitalParamsPlot)
+            rel_error_r = abs.(y2 .- y2_true) ./ abs.(y2_true)
+            rel_error_ϕ = abs.(y4 .- y4_true) ./ abs.(y4_true)
+
+            r_error_plot = plot(
+                t,
+                rel_error_r,
+                title = L"Relative Error in $r$",
+                ylabel = L"$|\hat{r}-{r}|/|\hat{r}|$",
+                xlabel = "Time (s)",
+                color = "red",
+                legend = false,
+                bottom_margin = 10mm,
+                top_margin = 10mm,
+                left_margin = 10mm,
+                right_margin = 10mm,
+            )
+            ϕ_error_plot = plot(
+                t,
+                rel_error_ϕ,
+                title = L"\n\nRelative Error in $\phi$",
+                ylabel = L"$|\hat{\phi}-{\phi}|/|\hat{\phi}|$",
+                xlabel = "Time (s)",
+                color = "blue",
+                legend = false,
+                bottom_margin = 10mm,
+                top_margin = 10mm,
+                left_margin = 10mm,
+                right_margin = 10mm,
+            )
+
+            display(r_plot)
+            display(ϕ_plot)
+
+            display(r_error_plot)
+            display(ϕ_error_plot)
 
             p2 = plot(
                 particle_x,
                 particle_y,
                 aspect_ratio = 1,
                 linewidth = 2,
-                title = "\n\nPredicted Trajectory",
+                title = "\nPredicted Trajectory",
                 xlabel = L"x",
                 ylabel = L"y",
                 label = "Predicted Trajectory",
-                bottom_margin = 10mm,
-                top_margin = 10mm,
-                left_margin = 10mm,
-                right_margin = 10mm,
+                bottom_margin = 5mm,
+                top_margin = 5mm,
+                left_margin = 5mm,
+                right_margin = 5mm,
             )
 
             plot!(
@@ -559,7 +610,6 @@ function optimizeBlackHole(;
         label = L"p_φ",
         linewidth = 2,
         color = "blue",
-        ylims = [0.9*minimum(p_ϕ_vals), 1.1*maximum(p_ϕ_vals)],
     )
 
     conservedQuantities = plot(pₜ_plot, p_ϕ_plot, layout = (2, 1))
@@ -571,9 +621,9 @@ end
 
 optimizeBlackHole(
     learningRate = 5e-3,
-    epochsPerIteration = 16,
-    numberOfCycles = 6,
+    epochsPerIteration = 6,
+    numberOfCycles = 1,
     totalTrainingPercent = 0.50,
-    true_parameters = [125, 0.8], # Create training data for these (p_0, e_0) values
-    initial_guess = [125, 0.8],
+    true_parameters = [120, 0.5], # Create training data for these (p_0, e_0) values
+    initial_guess = [120, 0.5],
 ) # Take this initial (p, e) guess
