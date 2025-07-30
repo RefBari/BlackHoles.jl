@@ -295,7 +295,7 @@ function optimizeBlackHole(;
     lr = learningRate;
 
     # solve the problem
-    num_iters = 16; # number of iterations per partition (i.e., 2 partitions means one run + 2 additional runs = 3 runs * 25 epochs/run = 75 epochs)
+    num_iters = epochsPerIteration; # number of iterations per partition (i.e., 2 partitions means one run + 2 additional runs = 3 runs * 25 epochs/run = 75 epochs)
     opt_result = Optimization.solve(
         optprob,
         Optim.BFGS(; initial_stepnorm = lr),
@@ -622,7 +622,7 @@ end
 optimizeBlackHole(
     learningRate = 5e-3,
     epochsPerIteration = 6,
-    numberOfCycles = 1,
+    numberOfCycles = 2,
     totalTrainingPercent = 0.50,
     true_parameters = [120, 0.5], # Create training data for these (p_0, e_0) values
     initial_guess = [120, 0.5],
