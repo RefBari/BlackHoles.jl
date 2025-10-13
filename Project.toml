@@ -1,0 +1,6 @@
+name = "BlackHoles"
+uuid = "8e9d7c7a-bd2f-4b3a-9c5f-6b9b6f7f6e3b"   # any UUIDv4 is fine
+version = "0.1.0"
+
+[compat]
+julia = "1.9"
