@@ -1,4 +1,5 @@
 # Binary Black Holes: From Gravity Waves to Orbits
+## Ref Bari
 
 Binary Black Holes are a fascinating physical system, unifying the small (amplitudes on the order of $\sim 10^{-21}$) and the grand (lumonisities $>10^{47}$ ergs, brighter than all the stars in the universe!). For a binary black hole system, the dominant $h^{22}$ mode is given by 
 
