@@ -1,0 +1,33 @@
+name: Documentation
+
+on:
+  push:
+    branches: [ main ]   # change to "master" if that's your default
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # allows pushing to gh-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'     # any Julia 1.x
+
+      # Make your package available to the docs build
+      - name: Instantiate package
+        run: julia --project -e 'using Pkg; Pkg.develop(path="."); Pkg.instantiate()'
+
+      # Install Documenter in the docs environment
+      - name: Instantiate docs environment
+        run: julia --project=docs -e 'using Pkg; Pkg.instantiate()'
+
+      # Build docs and deploy to gh-pages
+      - name: Build & deploy docs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # provided automatically
+        run: julia --project=docs docs/make.jl
