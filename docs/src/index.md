@@ -11,6 +11,8 @@ $$I_{yy}= 2(y^2 - \frac{1}{3}(x^2+y^2))$$
 $$I_{xy}= xy$$
 
 Expressing this in Julia is simple: 
-```julia function foo(x::Integer)
+```julia
+function foo(x::Integer)
     @show x + 1
-end```
+end
+```
