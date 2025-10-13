@@ -8,4 +8,4 @@ The above terms are given by
 
 $$I_{xx}= 2(x^2 - \frac{1}{3}(x^2+y^2))$$
 $$I_{yy}= 2(y^2 - \frac{1}{3}(x^2+y^2))$$
-$$I_{xx}= xy$$
+$$I_{xy}= xy$$
