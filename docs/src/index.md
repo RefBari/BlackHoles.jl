@@ -12,7 +12,29 @@ $$I_{xy}= xy$$
 
 Expressing this in Julia is simple: 
 ```julia
-function foo(x::Integer)
-    @show x + 1
+function orbit2tensor(orbit, component, mass=1.0)
+    #=
+        Construct trace-free moment tensor Ι(t) for orbit from BH orbit (x(t),y(t))
+
+        component defines the Cartesion indices in x,y. For example,
+        I_{22} is the yy component of the moment tensor.
+    =#
+    x = orbit[1,:]
+    y = orbit[2,:]
+
+    Ixx = x.^2
+    Iyy = y.^2
+    Ixy = x.*y
+    trace = Ixx .+ Iyy
+
+    if component[1] == 1 && component[2] == 1
+        tmp = Ixx .- (1.0 ./ 3.0).*trace
+    elseif component[1] == 2 && component[2] == 2
+        tmp = Iyy .- (1.0 ./ 3.0).*trace
+    else
+        tmp = Ixy
+    end
+
+    return mass .* tmp
 end
 ```
