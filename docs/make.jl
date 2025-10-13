@@ -6,8 +6,8 @@ makedocs(
     modules   = [BlackHoles],
     format    = Documenter.HTML(; prettyurls = get(ENV, "CI", "false") == "true"),
     pages     = ["Home" => "index.md"],
-    strict    = false,      # <-- do not fail on warnings in CI
-    checkdocs = :none,      # <-- do not require every export to have a docstring
+    checkdocs = :none,                 # don’t enforce docstrings right now
+    warnonly  = [:missing_docs],       # treat missing docs as warnings, not errors
 )
 
 deploydocs(
