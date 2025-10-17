@@ -21,8 +21,8 @@ $$g^{\text{Schwarzschild}}_{\mu\nu} =
 \end{pmatrix}$$
 
 Thus, the Hamiltonian for the Schwarzschild Metric is 
-$$H_{Schwarzschild} &=  - \left(1-\frac{2M}{r}\right)^{-1}\frac{p_t^2}{2} + \left(1-\frac{2M}{r}\right) \frac{p_r^2}{2} + \frac{p_\phi^2}{2r^2}\\
-    &=\frac{1}{2}\left(p_t, p_r, p_\theta, p_\phi \right)^T 
+$$H_{Schwarzschild}=- \left(1-\frac{2M}{r}\right)^{-1}\frac{p_t^2}{2} + \left(1-\frac{2M}{r}\right) \frac{p_r^2}{2} + \frac{p_\phi^2}{2r^2}$$
+    $$H=\frac{1}{2}\left(p_t, p_r, p_\theta, p_\phi \right)^T 
    \begin{pmatrix}
     -\left(1-\frac{2M}{r}\right)^{-1} & 0 & 0 & 0\\
     0 & \left(1-\frac{2M}{r}\right) & 0 & 0 \\ 
