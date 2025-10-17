@@ -37,11 +37,13 @@ We can now use Hamilton's Equations of Motion to obtain the orbit:
 $$\dot{q}=\frac{\partial H}{\partial p}, -\dot{p}=\frac{\partial H}{\partial q}$$
 
 Thus, for a particle on an equatorial orbit around a Schwarzschild black hole, we obtain the following geodesic equations of motion: 
+
 $$\frac{dt}{d\tau} = \left(1-\frac{2M}{r}\right)^{-1}E, \frac{dr}{d\tau} = \left(1-\frac{2M}{r}\right){p_r}, \frac{d\theta}{d\tau} =0, \frac{d\phi}{d\tau} = \frac{L}{r^2}$$
 
 Similarly, the momentum vector $p^{\mu}$ evolves as
 
-$$&\frac{dp_t}{d\tau} = \dot E = 0, \frac{dp_r}{d\tau} =  -\frac{1}{2}\left[\left(1-\frac{2M}{r}\right)^{-2}\left( \frac{2M}{r^2}\right) (p_t)^2 + \frac{2M}{r^2}(p_r)^2-2r^{-3} (p_{\phi})^2\right] \\ 
-    &\dot p_\theta = 0, \dot p_\phi = \dot L = 0$$
+$$\frac{dp_t}{d\tau} = \dot E = 0$$ 
+$$\frac{dp_r}{d\tau} =  -\frac{1}{2}\left[\left(1-\frac{2M}{r}\right)^{-2}\left( \frac{2M}{r^2}\right) (p_t)^2 + \frac{2M}{r^2}(p_r)^2-2r^{-3} (p_{\phi})^2\right]$$
+$$\dot p_\theta = 0, \dot p_\phi = \dot L = 0$$
 
 We have thus obtained all the equations of motion for a test particle orbiting a Schwarzschild Black Hole. 
