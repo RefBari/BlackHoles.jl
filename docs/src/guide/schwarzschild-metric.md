@@ -4,7 +4,7 @@ The goal of this module is to generate conservative dynamics training data for t
 
 In other words, this module will provide a step-by-step guide to creating a function that has the following input and output: 
 
-!!! note "An optional title"
+!!! note "Generate Schwarzschild Gravitational Waves Function"
     The `Generate_Schwarzschild_GWs()` function will operate as follows: 
     - Goal: Generate training data for conservative dynamics of binary black hole system that will be fed to Neural ODE
     - Input: Mass Ratio $q=m_2/m_1$ & Initial Conditions $\dot{x}(0)$
