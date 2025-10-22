@@ -198,6 +198,5 @@ h_plus_true, h_cross_true = h_22_strain_two_body(dt_data, blackHole_r1, mass1, b
 
 That's it! We're done! We've generated the orbits and waveforms associated with the Schwarzschild Metric!
 
-![BigOrbits](ThickOrbits.png "Orbits to Waves")
-
-![BigOrbits2](Orbits_Test2.png "Orbits to Waves 2")
+![BigOrbits](../assets/ThickOrbits.png "Orbits to Waves")
+![BigOrbits2](../assets/Orbits_Test2.png "Orbits to Waves 2")
