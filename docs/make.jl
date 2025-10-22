@@ -1,5 +1,18 @@
 using Documenter
 using BlackHoles
+# --- DEBUG: show what CI can see ---
+@info "Docs dir" @__DIR__
+targets = [
+    "src/guide/Orbits2Waves_Final.png",
+    "src/guide/ThickOrbits.png",
+    "src/guide/Orbits_Test2.png",
+    "src/guide/schwarzschild-metric.md",
+]
+for f in targets
+    path = joinpath(@__DIR__, f)
+    @info "exists?" f => isfile(path), "size" => (isfile(path) ? filesize(path) : -1)
+end
+# -----------------------------------
 
 makedocs(
     sitename  = "BlackHoles.jl",
