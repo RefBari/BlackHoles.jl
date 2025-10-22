@@ -12,7 +12,7 @@ In other words, this module will provide a step-by-step guide to creating a func
 
 We seek to describe the two body problem in general relativity. In particular, we seek the equations of motion for two body dynamics. In the limit that one black hole is much larger than the other, we can describe the smaller black hole as a particle following geodesics of the Schwarzschild metric around the larger black hole. We now proceed to describe how the two body problem can thus be reduced to an effective one-body problem. 
 
-![O2W](guide/Orbits2Waves_Final.png "FinalO2W")
+![O2W](assets/Orbits2Waves_Final.png "FinalO2W")
 
 Consider two black holes of masses $m_1$ and $m_2$ orbiting around their common center-of-mass. We have two cases: 
 > - $m_1>>m_2$: The equivalent one-body picture is a particle orbiting a central Schwarzschild black hole of mass $M=m_1+m_2$
@@ -197,5 +197,5 @@ h_plus_true, h_cross_true = h_22_strain_two_body(dt_data, blackHole_r1, mass1, b
 ```
 
 That's it! We're done! We've generated the orbits and waveforms associated with the Schwarzschild Metric!
-![BigOrbits](guide/ThickOrbits.png "Orbits to Waves")
-![BigOrbits2](guide/Orbits_Test2.png "Orbits to Waves 2")
+![BigOrbits](assets/ThickOrbits.png "Orbits to Waves")
+![BigOrbits2](assets/Orbits_Test2.png "Orbits to Waves 2")
