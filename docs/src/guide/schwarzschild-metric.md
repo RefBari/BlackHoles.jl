@@ -10,7 +10,7 @@ In other words, this module will provide a step-by-step guide to creating a func
     - Input: Mass Ratio $q=m_2/m_1$ & Initial Conditions $\dot{x}(0)$
     - Output: True Orbits $(x_1(t), y_1(t))$ and $(x_2(t), y_2(t))$ of a binary black hole system and the associated gravitational waveform $h(t)$. 
 
-We seek to describe the two body problem in general relativity. In particular, we seek the equations of motion for two body dynamics. In the limit that one black hole is much larger than the other, we can describe the smaller black hole as a particle following geodesics of the Schwarzschild metric around the larger black hole. We now proceed to describe how the two body problem can thus be reduced to an effective one-body problem. 
+We seek to describe the two body problem in general relativity. In particular, we seek the equations of motion for two body dynamics. In the limit that one black hole is much larger than the other, we can describe the smaller black hole as a particle following geodesics of the Schwarzschild metric around the larger black hole. We now proceed to describe how the two body problem can thus be reduced to an effective one-body problem. Plot:
 
 ![TestingOrbits](assets/ThickOrbits.png)
 
