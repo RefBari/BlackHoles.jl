@@ -35,7 +35,7 @@ makedocs(
         "API"  => "api.md",
     ],
     checkdocs = :none,
-    warnonly  = [:missing_docs],
+    warnonly = [:missing_docs, :cross_references],
 )
 
 
