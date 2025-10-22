@@ -36,7 +36,6 @@ makedocs(
     ],
     checkdocs = :none,
     warnonly = [:missing_docs, :cross_references],
-    assets    = ["guide"],
 )
 
 
