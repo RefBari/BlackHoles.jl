@@ -12,7 +12,7 @@ In other words, this module will provide a step-by-step guide to creating a func
 
 We seek to describe the two body problem in general relativity. In particular, we seek the equations of motion for two body dynamics. In the limit that one black hole is much larger than the other, we can describe the smaller black hole as a particle following geodesics of the Schwarzschild metric around the larger black hole. We now proceed to describe how the two body problem can thus be reduced to an effective one-body problem. 
 
-![O2W](Orbits2Waves_Final.png "FinalO2W")
+![O2W](docs/src/guide/Orbits2Waves_Final.png "FinalO2W")
 ![BigOrbits](ThickOrbits.png "Orbits to Waves")
 ![BigOrbits2](Orbits_Test2.png "Orbits to Waves 2")
 
