@@ -21,6 +21,7 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Conservative Dynamics" => [
+            "Physics of Newtonian Metric"    => "guide/newtonian-metric.md",
             "Physics of Schwarzschild Metric"    => "guide/schwarzschild-metric.md",
             "Simulating Orbits in Schwarzschild Metric"  => "guide/orbits.md",
             "Quadrupole Approximation: Orbits to Gravitational Wave"        => "guide/waveforms.md",
