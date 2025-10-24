@@ -63,21 +63,62 @@ $$\frac{dp^0}{d\tau}+\Gamma^0_{00}(p^0)^2 =0$$
 
 !!! note "Calculation of Christoffel Symbol $\Gamma^0_{00}$"
     We expand the Christoffel Symbol in terms of the metric as
+    
     $$\Gamma^0_{00}=\frac{1}{2}g^{0\alpha}(g_{\alpha 0} + g_{\alpha 0} - g_{00, \alpha})$$
+    
     These terms will survive only if $\alpha = 0$, which gives
+    
     $$\Gamma^0_{00} = \frac{1}{2}g^{00}(g_{00,0}+g_{00,0}-g_{00,0})=\frac{1}{2}g^{00}g_{00,0}$$
+    
     The Newtonian Metric $g_{\mu\nu}$ is given by 
+    
     $$g_{\mu\nu}=\begin{pmatrix} -(1+2\phi) & 0 & 0 & 0\\
     0 & (1-2\phi) & 0 & 0 \\
     0 & 0 & (1-2\phi) & 0 \\
     0 & 0 & 0 & (1-2\phi) \\
     \end{pmatrix}$$
+    
     Thus, using $g^{00}=-(1+2\phi)^{-1}$ and $g_{00,0}=-2\dot\phi$, the Christoffel symbol reduces to 
+    
     $$\Gamma^0_{00} = \frac{1}{2}g^{00}g_{00,0} = \frac{1}{2}\cdot -(1+2\phi)^{-1} \cdot -2\dot\phi = \frac{\dot\phi}{1+2\phi}$$
+    
     We're almost there! If we now write this as $\dot\phi(1+2\phi)^{-1}\approx \dot\phi(1-2\phi)\sim \dot\phi-2\phi\dot\phi$, we can neglect the second term because it's of order $O(\phi^2)$, so that ultimately, $\Gamma^0_{00}\sim \dot\phi$. 
 
 Substituting in the christoffel symbol $\Gamma^0_{00}=\dot{\phi}$ and taking $(p^0)^2 = m^2 + |\vec{p}|^2 \sim m^2$ (when $p^i<<p^0$), we obtain 
 
 $$\frac{dp^0}{d\tau}+\dot{\phi} (m^2) = 0 \rightarrow \boxed{\frac{dp^0}{d\tau}=-\dot{\phi}m^2}$$
 
-This is an expression of conservation of energy. In particular, the energy of the system $p^0$ is conserved if the gravitational potential $\phi = -GM/r$ is constant in time. We now consider the spatial components of the geodesic equation. 
+This is an expression of conservation of energy. In particular, the energy of the system $p^0$ is conserved if the gravitational potential $\phi = -GM/r$ is constant in time. We now consider the spatial components of the geodesic equation: 
+
+$$\frac{dp^i}{d\tau}+\Gamma^i_{\alpha\beta}p^{\alpha\beta}=0$$
+
+By writing $\frac{dp^i}{d\tau}=\frac{dp^i}{dx^\alpha}\frac{dx^{\alpha}}{d\tau}=p^i_\alpha p^\alpha$, we have
+
+$$p^i_{,\alpha}p^{\alpha} + \Gamma^i_{\alpha\beta}p^{\alpha}p^{\beta}=0$$
+
+We again enforce the low-speed approximation that $v<<c$, which means $p^i<<p^0$, so that we can once again discard any terms involving $p^i$:
+
+$$p^i_{,0}p^0 + \Gamma^i_{00}p^0 p^0 =0 \rightarrow p^i_{,0}p^0 + \Gamma^i_{00}(p^0)^2=0$$
+
+Once again using $p^0 \sim m$, we have 
+
+$$m \frac{dp^i}{d\tau} + \Gamma^i_{00}*m^2 = 0$$
+
+We thus have 
+
+$$\frac{dp^i}{d\tau} = -m\Gamma^i_{00}$$
+
+!!! note "Calculation of Christoffel Symbol $\Gamma^i_{00}$"
+    We expand the Christoffel Symbol in terms of the metric as
+    
+    $$\Gamma^i_{00}=\frac{1}{2}g^{i\alpha}(g_{\alpha 0,0}+g_{\alpha 0, 0} - g_{00, \alpha})$$
+
+    These terms are non-zero only in $g^{i\alpha}$ if $\alpha = i$, giving
+
+    $$\Gamma^i_{00}=\frac{1}{2}g^{ii}(g_{i0,0}+g_{i0,0}-g_{00,i})=-\frac{1}{2}g^{ii}g_{00,i}$$
+
+    Now we have $g_{00}=-(1+2\phi) \rightarrow g_{00,i}=-2\phi_{,i}$ and $g^{ii}=(1-2\phi)^{-1}=-\frac{1}{2}(1-2\phi)^{-1}(-2\phi_{,i})$. This becomes $\Gamma^i_{00}=\frac{\phi_{,i}}{1-2\phi}=\phi_{,i}(1-2\phi)^{-1} \approx \phi_{,i}(1+2\phi) \sim \phi_{,i}+O(\phi^2)$. Neglecting all higher-order terms, we end up with $\Gamma^i_{00}\sim \phi_{,i}$.
+    
+If we now substitute the christoffel symbol $\Gamma^i_{00}=\phi_{,i}$, we get 
+
+$$\frac{dp^i}{d\tau}=-m\Gamma^i_{00}=-m\phi_{,i} \to \frac{dp^i}{d\tau}=-m\frac{d\phi}{dx^i} \to \boxed{\frac{dp^i}{d\tau}=-m\nabla \phi}$$
