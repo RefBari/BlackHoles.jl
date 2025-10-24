@@ -28,6 +28,8 @@ $$ds^2 = -\left(1-\frac{2GM}{r} \right)dt^2 + \left(1+\frac{2GM}{r} \right)(dx^2
 
   This metric is valid in the limit that $\frac{GM}{r}<<1$. The Newtonian Metric represents a small deviation from flat spacetime due to gravity. Note that we will often use the variable $\phi = -GM/r$ in this module to represent the Newtonian gravitational potential. Please do not confuse this with any sort of angular variable. It is simply the Newtonian gravitational potential, and I'm using it because that is the convention in the book "A First Course in General Relativity" by Bernard Schutz. 
   
+  ![SpacetimeMetrics](Metrics.png)
+  
   Observe that for $r>>M$, we see that the Newtonian Metric reduces back to the Minkowski Metric. We will now prove that the Newtonian Metric is so-called because the equations of motion for this metric is, indeed, $F=ma$. We begin by writing down the geodesic equation, which is the equivalent of Newton's law of Inertia in relativity: An object with no external forces acting on it will move in a straight line. The geodesic equation states that the covariant derivative of the velocity vector is 0:
   $$\nabla_{U}U = 0$$
 Since $p^{\mu} = mU^{\mu}$, this is equivalent to $\nabla_p p =0$. By expanding the covariant derivative, we obtain: 
