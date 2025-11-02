@@ -26,7 +26,7 @@ makedocs(
             "Simulating Orbits in Schwarzschild Metric"  => "guide/orbits.md",
             "Quadrupole Approximation: Orbits to Gravitational Wave"        => "guide/waveforms.md",
             "Adding Higher Order Modes"        => "guide/higher_modes.md",
-            "Adding a Neural Network: Waves to Orbits"        => "guide/inverse_problem.md"
+            "Fundamentals of Neural Networks"        => "guide/inverse_problem.md"
         ],
         "Dissipative Dynamics" => [
             "Theory: GENERIC Formalism"    => "guide/GENERIC.md",
