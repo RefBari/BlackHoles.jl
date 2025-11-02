@@ -51,7 +51,11 @@ Now let's create a noisy sine function from these parts:
 ```julia
 y_samples = sin.(x_samples) .+ y_noise
 ```
-Now we plot this by doing `scatter(x_samples[:], y_samples[:], label = "data")`. Now let's define the architechture of our neural network. Since we'll create a simple feedforward neural network, we'll express oits architechture in the form of a chain of functions: 
+Now we plot this by doing `scatter(x_samples[:], y_samples[:], label = "data")`. 
+
+  ![ScatterPlot](ScatterPlot.png)
+
+Now let's define the architechture of our neural network. Since we'll create a simple feedforward neural network, we'll express oits architechture in the form of a chain of functions: 
 
 ```julia
 model = Chain( # NN = nested chain of functions
@@ -75,6 +79,9 @@ Now let's see what the initial prediction of the NN is:
 ```julia
 scatter!(x_sample[:], y_initial_prediction[:], label = "initial prediction")
 ```
+
+![InitialPrediction](InitialPrediction.png)
+
 We will now define a loss function
 ```julia
 function loss_fn(p, ls)
@@ -108,6 +115,8 @@ end
 ```
 Now we can plot the loss function by `plot(loss_history, yscale =:log10)`. 
 
+![LossFunction](LossFunction.png)
+
 We now see that the final prediction is much better than the initial one! 
 
 ```julia
@@ -116,7 +125,7 @@ scatter(x_samples[:], y_samples[:], label = "data")
 scatter!(x_samples[:], y_final_prediction[:], label = "final prediction")
 ```
 
-
+![FinalFit](FinalFit.png)
 
 
 
