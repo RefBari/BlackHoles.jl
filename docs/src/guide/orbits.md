@@ -185,7 +185,7 @@ I will take you through this entire pipeline step-by-step. First, we begin with 
 
 If we now plot our results, they look as follows. 
 
-![TrainingResultsp15](TrainingResults_p15_e0.5.png‎)
+![TrainingResultsp15](‎TrainingResults_p15_e0.5.png)
 
 
 
