@@ -52,61 +52,66 @@ I will take you through this entire pipeline step-by-step. First, we begin with 
 
 !!! note "Step 1: Import Training Data"
     In our `FullNewtonian2Schwarzschild.jl` code, we import our true orbits and waveforms as simply as:
-    ```x_ecc, y_ecc = file2trajectory(tsteps,"input/trajectoryA_Schwarzschild_p15_e0p5.txt")
-x2_ecc, y2_ecc = file2trajectory(tsteps,"input/trajectoryB_Schwarzschild_p15_e0p5.txt")
-waveform_real_ecc = file2waveform(tsteps,"input/waveform_real_Schwarzschild_p15_e0p5.txt")
-waveform_imag_ecc = file2waveform(tsteps,"input/waveform_imag_Schwarzschild_p15_e0p5.txt")```
+    ```
+      x_ecc, y_ecc = file2trajectory(tsteps,"input/trajectoryA_Schwarzschild_p15_e0p5.txt")
+      x2_ecc, y2_ecc = file2trajectory(tsteps,"input/trajectoryB_Schwarzschild_p15_e0p5.txt")
+      waveform_real_ecc = file2waveform(tsteps,"input/waveform_real_Schwarzschild_p15_e0p5.txt")
+      waveform_imag_ecc = file2waveform(tsteps,"input/waveform_imag_Schwarzschild_p15_e0p5.txt")
+    ```
 
 !!! note "Step 2: Define Simulation Parameters"
     We define our simulation parameters simply as follows. The masses are given by 
-    ```mass_ratio = 1
-model_params = [mass_ratio]
-mass1 = 1.0/(1.0+mass_ratio)
-mass2 = mass_ratio/(1.0+mass_ratio)```
+    ```
+        mass_ratio = 1
+        model_params = [mass_ratio]
+        mass1 = 1.0/(1.0+mass_ratio)
+        mass2 = mass_ratio/(1.0+mass_ratio)
+    ```
     We can also define the timesteps and timespan as follows
-    ```tspan = (0, 1.9e3)
-datasize = 100
-tsteps = range(tspan[1], tspan[2], length = datasize) 
-dt_data = tsteps[2] - tsteps[1]
-dt = 1.0
-num_optimization_increments = 20```
+    ```
+      tspan = (0, 1.9e3)
+      datasize = 100
+      tsteps = range(tspan[1], tspan[2], length = datasize) 
+      dt_data = tsteps[2] - tsteps[1]
+      dt = 1.0
+      num_optimization_increments = 20
+    ```
 
 !!! note "Step 3: Define Initial Conditions"
     We define our initial conditions as Newtonian initial conditions, as follows: 
-    ```p = 15
-    e = 0.5
-    r_min = p / (1+e)
-    r_max = p / (1-e)
-    const rvals_penalty = range(r_min, r_max; length = 100)
-    # E0, L0 = circular_pt_L(R)
-    E0_base, L0_base = eccentric_pt_L(p, e) # Newtonian IC
-    # E0_base, L0_base = pe_2_EL(p, e)[2:3] # Schwarzschild IC
+    ```
+        p = 15
+        e = 0.5
+        r_min = p / (1+e)
+        r_max = p / (1-e)
+        const rvals_penalty = range(r_min, r_max; length = 100)
+        E0_base, L0_base = eccentric_pt_L(p, e) # Newtonian IC
      ```
 
 !!! note "Step 4: Create Neural Networks"
     Our neural network is relatively simple, with just a single hidden layer: 
     ```
-    NN_Conservative = Chain(
-      Dense(1, 10, tanh),
-      Dense(10, 10, tanh),
-      Dense(10, 2),
-    )
+        NN_Conservative = Chain(
+          Dense(1, 10, tanh),
+          Dense(10, 10, tanh),
+          Dense(10, 2),
+        )
     ```
 
 !!! note "Step 5: Initialize Neuarl Networks"
     We define the NN parameters and state as follows: `NN_Conservative_params, NN_Conservative_state = Lux.setup(rng, NN_Conservative)`. Now, we initialize the weights and biases of the NN near zero (near Newtonian weak-field limit conditions):
     ```
-    for (i, layer) in enumerate(NN_Conservative_params)
-        if ~isempty(layer)
-            if i == length(NN_Conservative_params)  # Final layer
-                layer.weight .= 0
-                layer.bias .= 0 # Force output near 0
-            else  # Hidden layers
-                layer.weight .= 0.1 * randn(rng, eltype(layer.weight), size(layer.weight))
-                layer.bias .= 0.1 * randn(rng, eltype(layer.bias), size(layer.bias))
+        for (i, layer) in enumerate(NN_Conservative_params)
+            if ~isempty(layer)
+                if i == length(NN_Conservative_params)  # Final layer
+                    layer.weight .= 0
+                    layer.bias .= 0 # Force output near 0
+                else  # Hidden layers
+                    layer.weight .= 0.1 * randn(rng, eltype(layer.weight), size(layer.weight))
+                    layer.bias .= 0.1 * randn(rng, eltype(layer.bias), size(layer.bias))
+                end
             end
         end
-    end
     ```
 
 !!! note "Step 6: Assign NN Inputs & Extract Outputs"
@@ -178,9 +183,9 @@ num_optimization_increments = 20```
     plot!(waveform_nn_imag, label = "Prediction")
     ```
 
+If we now plot our results, they look as follows. 
 
-
-
+![TrainingResultsp15](TrainingResults_p15_e0.5.png‎)
 
 
 
