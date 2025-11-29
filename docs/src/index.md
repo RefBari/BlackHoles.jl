@@ -1,11 +1,11 @@
 # Binary Black Holes: From Gravity Waves to Orbits
 #### Ref Bari (Brown University, Physics MS Thesis)
 
-A binary black hole system consists of two black holes orbiting each other. As these black holes orbit each other, they release ripples through the fabric of space-time. These ripples are known as "gravitational waves". They were first predicted in 1916 by Einstein himself, shortly after he discovered the General Theory of Relativity. Einstein speculated that gravitational waves would be too faint to detect. Nearly exactly a century to his discovery, the Laser Interferometer Gravitational-Wave Obsevatory (LIGO) made the first direct detection of a gravitational wave on September 14, 2015 (hence the gravitational wave signal was aptly-named GW150914). This landmark discovery resulted in the 2017 Nobel Prize in Physics being awarded to Rainer Weiss, Barry Barish, and Kip Thorne -- the three founding scientists behind LIGO. This project, Neural DynAMO, is dedicated to the discovery and prediction of the spacetime metric of a binary black hole system from its gravitational wave signal alone. 
+A binary black hole system consists of two black holes orbiting each other. As these black holes orbit each other, they release ripples through the fabric of space-time. These ripples are known as "gravitational waves". They were first predicted in 1916 by Einstein himself, shortly after he discovered the General Theory of Relativity. Einstein speculated that gravitational waves would be too faint to detect. Nearly exactly a century to his discovery, the Laser Interferometer Gravitational-Wave Obsevatory (LIGO) made the first direct detection of a gravitational wave on September 14, 2015 (hence the gravitational wave signal was aptly-named GW150914). This landmark discovery resulted in the 2017 Nobel Prize in Physics being awarded to Rainer Weiss, Barry Barish, and Kip Thorne -- the three founding scientists behind LIGO. 
 
 ![Gravitational Wave Signal](GW250114.mp4)
 
-Binary Black Holes are a fascinating physical system, unifying the small [^Abott2016] and the grand [^Thorne1995]. For a binary black hole system, the dominant $h^{22}$ mode is given by 
+Binary Black Holes are a fascinating physical system, unifying the small [^Abott2016] and the grand [^Thorne1995]. This project is dedicated to the following goal.
  
 [^Abott2016]:
     > Amplitudes on the order of $\sim 10^{-21}$
@@ -14,7 +14,14 @@ Binary Black Holes are a fascinating physical system, unifying the small [^Abott
 [^Thorne1995]:
     > Lumonisities $>10^{47}$ ergs, brighter than all the stars in the universe
     Thorne, Kip S. "Gravitational waves." arXiv preprint gr-qc/9506086 (1995).
-    
+
+!!! note "The Neural DynAMO Project"
+    The Neural DynAMO project seeks to achieve the following goal: predict an approximate spacetime metric of a binary black hole system from its gravitational wave signal alone. In particular, the code developed as part of this project will result in the following: 
+    - The orbital dynamics corresponding to the gravitational wave for a non-precessing, equatorial binary black hole system
+    - The spacetime metric corresponding to the orbital dynamics of a binary system
+    - Parameter estimation of the multipole moments of the black holes from the spacetime metric via Ryan's Theorem
+
+For a binary black hole system, the dominant $h^{22}$ mode is given by 
 $$h^{22}(t) \sim \frac{1}{r}(\ddot{I}_{xx} - \ddot{I}_{yy} - 2i\ddot{I}_{xy})$$
 
 The above terms are given by 
