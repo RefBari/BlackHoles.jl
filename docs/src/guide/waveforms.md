@@ -1,3 +1,3 @@
-# Quadrupole Approximation: Orbits to Gravitational Wave
+# Numerical Kludge Scheme: Quadrupole Approximation Mapping
 
-How to install, load data, and run a tiny example…
+Blaeh blah
