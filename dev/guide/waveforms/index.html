@@ -65,4 +65,101 @@ end</code></pre><p>This can be a lot to look at at first sight, so here&#39;s a 
 \begin{pmatrix}
 \partial H/\partial p \\ 
 \partial H/\partial q
-\end{pmatrix}\]</p><p>Canonically, these time derivates are in terms of proper time: </p><p class="math-container">\[\dot p = \frac{\partial p}{\partial \tau},\dot q = \frac{\partial q}{\partial \tau}\]</p><p>To convert these to coordinate time, we use the chain rule: </p><p class="math-container">\[\dot t = \frac{\partial H}{\partial p_t}\]</p><p>That means </p><p class="math-container">\[\dot t = \frac{dt}{d\tau} = \frac{\partial H}{\partial p_t}\]</p><p>Thus, in terms of coordinate time, the equations of motion are: </p><p class="math-container">\[\frac{dx^{\mu}}{dt}=\frac{dx^{\mu}}{d\tau}*\frac{d\tau}{dt}\]</p><p>Great! With this in order, we turn to the orbit-to-waveform mapping. We will employ the so-called &quot;Numerical Kludge&quot; formalism, which uses the Quadrupole approximation (in the original paper, the Quadrupole-Octope approximation or Press formula are also tested).</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../orbits/">« Simulating Orbits in Schwarzschild Metric</a><a class="docs-footer-nextpage" href="../higher_modes/">Adding Higher Order Modes »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 3 June 2026 00:09">Wednesday 3 June 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+\end{pmatrix}\]</p><p>Canonically, these time derivates are in terms of proper time: </p><p class="math-container">\[\dot p = \frac{\partial p}{\partial \tau},\dot q = \frac{\partial q}{\partial \tau}\]</p><p>To convert these to coordinate time, we use the chain rule: </p><p class="math-container">\[\dot t = \frac{\partial H}{\partial p_t}\]</p><p>That means </p><p class="math-container">\[\dot t = \frac{dt}{d\tau} = \frac{\partial H}{\partial p_t}\]</p><p>Thus, in terms of coordinate time, the equations of motion are: </p><p class="math-container">\[\frac{dx^{\mu}}{dt}=\frac{dx^{\mu}}{d\tau}*\frac{d\tau}{dt}\]</p><p>Great! With this in order, we turn to the orbit-to-waveform mapping. We will employ the so-called &quot;Numerical Kludge&quot; formalism, which uses the Quadrupole approximation (in the original paper, the Quadrupole-Octope approximation or Press formula are also tested).</p><pre><code class="language-julia hljs">function Compute_Gravitational_Wave(Geodesic, Observer)
+    return h+, hx
+end</code></pre><p>To implement this formalism, we have the following steps: </p><ul><li><p>Boyer-Lindquist to Cartesian Coordinates</p><ul><li>Convert the Kerr geodesic from <span>$(r, \theta, \phi)$</span> to <span>$(x, y, z)$</span> coordinates. There are technically two ways to convert: a oblate-spheroidal transformation and a spherical-coordinates transformation. In the original NK paper, a simple spherical coordinate transformation is used, which is why we opt for the latter.</li></ul></li></ul><pre><code class="language-julia hljs">function BoyerLindquist_to_Cartesian(r, θ, ϕ; a)
+    x = @. r * sin(θ) * cos(ϕ)
+    y = @. r * sin(θ) * sin(ϕ)
+    z = @. r * cos(θ)
+    return x, y, z
+end 
+
+function Soln_to_Source(soln; a)
+    t = soln[1, :]
+    r = soln[2, :]
+    θ = soln[3, :]
+    ϕ = soln[4, :]
+
+    x, y, z = BoyerLindquist_to_Cartesian(r, θ, ϕ; a = a)
+    orbit = [x&#39;; y&#39;; z&#39;]
+
+    return t, orbit
+end</code></pre><ul><li><p>Calculate Quadrupole Tensor </p><ul><li>The Quadrupole Tensor is calculated as <span>$Q = \mu \left(x_i x_j - \frac{1}{3}\delta_{ij} * r^2 \right)$</span></li></ul></li></ul><pre><code class="language-julia hljs">function Calculate_Quadrupole_Tensor(orbit; μ = 1.0)
+    N = size(orbit, 2)
+    Q = zeros(3, 3, N)
+
+    for k in 1:N 
+        x = orbit[:, k]
+        r2 = dot(x, x)
+
+        for i in 1:3, j in 1:3 
+            δij = (i == j) ? 1.0 : 0.0
+            Q[i, j, k] = μ * (x[i] * x[j] - (1/3)*δij*r2)
+        end
+    end
+
+    return Q
+end</code></pre><ul><li><p>Take Second Derivative of Quadrupole Tensor  </p><ul><li>A second derivative stencil was implemented by Prof. Keith from the paper &quot;Generation of finite difference formulas on arbitrarily spaced grids&quot;</li></ul></li></ul><pre><code class="language-julia hljs">function Calculate_Q_ddot(Q, dt)
+    Qdd = similar(Q)
+
+    for i in 1:3, j in 1:3
+        Qdd[i, j, :] .= d2_dt2(vec(Q[i, j, :]), dt)
+    end
+
+    return Qdd 
+end</code></pre><ul><li><p>Project to Observer</p><ul><li>We define a unit vector from the center of the central massive black hole to the observer. On the observer plane, polarization bases vectors <span>$\hat p$</span> and <span>$\hat q$</span> are defined such that <span>$\hat p \perpto \hat q \perpto \hat n$</span></li></ul></li></ul><pre><code class="language-julia hljs">function Observer_Basis(θ_obs, ϕ_obs)
+    
+    # Direction to observer
+    n = [
+        sin(θ_obs) * cos(ϕ_obs),
+        sin(θ_obs) * sin(ϕ_obs),
+        cos(θ_obs)
+    ]
+
+    # Polarization basis vectors (p,q) on observer sky
+    p = [
+        cos(θ_obs) * cos(ϕ_obs),
+        cos(θ_obs) * sin(ϕ_obs),
+        -sin(θ_obs)
+    ]
+
+    q = [
+        -sin(ϕ_obs),
+        cos(ϕ_obs),
+        0.0
+    ]
+
+    return n, p, q
+end</code></pre><ul><li><p>Compute <span>$h_+$</span> and <span>$h_\times$</span> </p><ul><li>We compute <span>$h_+$</span> in terms of the polarization bases vectors as <span>$h_+ = (p_i * p_j - q_i * q_j) * H_{ij}$</span></li><li>We compute <span>$h_\times$</span> in terms of the polarization bases vectors as <span>$h_\times = (p_i * q_j + q_i * p_j) * H_{ij}$</span></li></ul></li></ul><pre><code class="language-julia hljs">function Compute_h₊_hₓ(Qdd; θ_obs = 0.0, ϕ_obs = 0.0, D = 1.0)
+    _, p, q = Observer_Basis(θ_obs, ϕ_obs)
+    N = size(Qdd, 3)
+    
+    h₊ = zeros(N)
+    hₓ = zeros(N)
+
+    for k in 1:N
+        H = (2/D) .* Qdd[:, :, k]
+
+        h₊[k] = sum(
+            (p[i] * p[j] - q[i] * q[j]) * H[i, j]
+            for i in 1:3, j in 1:3
+        )
+
+        hₓ[k] = sum(
+            (p[i] * q[j] + q[i] * p[j]) * H[i, j]
+            for i in 1:3, j in 1:3
+        )
+    end
+
+    return h₊, hₓ
+end</code></pre><p>To summarize, we implement everything in a single small function <code>nk_quadrupole_waveform</code>, which takes as input our geodesic <code>soln</code>, the spin of the central black hole <code>a</code>, the mass of the smaller black hole <code>μ = 1.0</code>, and the location of the observer <code>θ_obs = 0.0, ϕ_obs = 0.0, D = 1.0</code>:</p><pre><code class="language-julia hljs">function nk_quadrupole_waveform(soln; a, μ = 1.0, θ_obs = 0.0, ϕ_obs = 0.0, D = 1.0)
+    
+    t, orbit = Soln_to_Source(soln; a = a)
+    dt = assert_uniform_time(t)
+    Q = Calculate_Quadrupole_Tensor(orbit; μ = μ)
+    Q̇̇ = Calculate_Q_ddot(Q, dt)
+    h₊, hₓ = Compute_h₊_hₓ(Q̇̇; θ_obs = θ_obs, ϕ_obs = ϕ_obs, D = D)
+
+    return t, h₊, hₓ, Q, Q̇̇
+end </code></pre><p>In practice, we use this function simply as follows: </p><pre><code class="language-julia hljs">t, h₊, hₓ, Q, Qdd = nk_quadrupole_waveform(true_solution; a = 0.9, μ = 1.0, θ_obs = 0.0, ϕ_obs = 0.0, D = 1.0)</code></pre><p>It&#39;s worth running a few sanity checks to ensure our waveform generation scheme makes sense: </p><ol><li>Quadrupole Tensor is STF: Symmetric &amp; Trace-Free</li><li>Face-On Projection Check (<span>$\theta_{obs}=0, \phi_{obs}=0$</span>)</li><li>Circular, Equatorial Orbit Gravitational Waveform</li><li>Periapsis Radiation Burst Check</li><li>Varying Observer Inclination for Circular, Equatorial Orbit</li></ol><p>What is the first check about? The Quadrupole Tensor is defined as: </p><p class="math-container">\[Q_{ij} = I_{ij} - \frac{1}{3}\delta_{ij}I_{kk}\]</p><p>where <span>$I_{kk} = I_{xx} + I_{yy} + I_{zz}$</span> is the trace and <span>$\delta_{ij}$</span> turns on the trace subtraction only for diagonal entries: </p><p>$</p><p>\begin{pmatrix} I<em>{xx} - \frac{1}{3}(I</em>{xx} + I<em>{yy} + I</em>{zz}) &amp; I<em>{xy} &amp; I</em>{xz} \
+I<em>{yx} &amp; I</em>{yy} - \frac{1}{3}(I<em>{xx} + I</em>{yy} + I<em>{zz}) &amp; I</em>{yz} \  I<em>{zx} &amp; I</em>{zy} &amp; I<em>{zz} - \frac{1}{3}(I</em>{xx} + I<em>{yy} + I</em>{zz}) &amp; I_{yz} \  \  \end{pmatrix} $</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../orbits/">« Simulating Orbits in Schwarzschild Metric</a><a class="docs-footer-nextpage" href="../higher_modes/">Adding Higher Order Modes »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.17.0 on <span class="colophon-date" title="Wednesday 3 June 2026 19:09">Wednesday 3 June 2026</span>. Using Julia version 1.12.6.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
