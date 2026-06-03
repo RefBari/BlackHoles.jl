@@ -113,3 +113,179 @@ Thus, in terms of coordinate time, the equations of motion are:
 $$\frac{dx^{\mu}}{dt}=\frac{dx^{\mu}}{d\tau}*\frac{d\tau}{dt}$$
 
 Great! With this in order, we turn to the orbit-to-waveform mapping. We will employ the so-called "Numerical Kludge" formalism, which uses the Quadrupole approximation (in the original paper, the Quadrupole-Octope approximation or Press formula are also tested).
+
+```julia
+function Compute_Gravitational_Wave(Geodesic, Observer)
+    return h+, hx
+end
+```
+To implement this formalism, we have the following steps: 
+
+* Boyer-Lindquist to Cartesian Coordinates
+
+  - Convert the Kerr geodesic from $(r, \theta, \phi)$ to $(x, y, z)$ coordinates. There are technically two ways to convert: a oblate-spheroidal transformation and a spherical-coordinates transformation. In the original NK paper, a simple spherical coordinate transformation is used, which is why we opt for the latter.
+
+```julia
+function BoyerLindquist_to_Cartesian(r, θ, ϕ; a)
+    x = @. r * sin(θ) * cos(ϕ)
+    y = @. r * sin(θ) * sin(ϕ)
+    z = @. r * cos(θ)
+    return x, y, z
+end 
+
+function Soln_to_Source(soln; a)
+    t = soln[1, :]
+    r = soln[2, :]
+    θ = soln[3, :]
+    ϕ = soln[4, :]
+
+    x, y, z = BoyerLindquist_to_Cartesian(r, θ, ϕ; a = a)
+    orbit = [x'; y'; z']
+
+    return t, orbit
+end
+```
+
+* Calculate Quadrupole Tensor 
+
+  - The Quadrupole Tensor is calculated as $Q = \mu \left(x_i x_j - \frac{1}{3}\delta_{ij} * r^2 \right)$
+
+```julia
+function Calculate_Quadrupole_Tensor(orbit; μ = 1.0)
+    N = size(orbit, 2)
+    Q = zeros(3, 3, N)
+
+    for k in 1:N 
+        x = orbit[:, k]
+        r2 = dot(x, x)
+
+        for i in 1:3, j in 1:3 
+            δij = (i == j) ? 1.0 : 0.0
+            Q[i, j, k] = μ * (x[i] * x[j] - (1/3)*δij*r2)
+        end
+    end
+
+    return Q
+end
+```
+ 
+* Take Second Derivative of Quadrupole Tensor  
+
+  - A second derivative stencil was implemented by Prof. Keith from the paper "Generation of finite difference formulas on arbitrarily spaced grids"
+
+```julia
+function Calculate_Q_ddot(Q, dt)
+    Qdd = similar(Q)
+
+    for i in 1:3, j in 1:3
+        Qdd[i, j, :] .= d2_dt2(vec(Q[i, j, :]), dt)
+    end
+
+    return Qdd 
+end
+```
+ 
+* Project to Observer
+
+  - We define a unit vector from the center of the central massive black hole to the observer. On the observer plane, polarization bases vectors $\hat p$ and $\hat q$ are defined such that $\hat p \perpto \hat q \perpto \hat n$
+
+```julia
+function Observer_Basis(θ_obs, ϕ_obs)
+    
+    # Direction to observer
+    n = [
+        sin(θ_obs) * cos(ϕ_obs),
+        sin(θ_obs) * sin(ϕ_obs),
+        cos(θ_obs)
+    ]
+
+    # Polarization basis vectors (p,q) on observer sky
+    p = [
+        cos(θ_obs) * cos(ϕ_obs),
+        cos(θ_obs) * sin(ϕ_obs),
+        -sin(θ_obs)
+    ]
+
+    q = [
+        -sin(ϕ_obs),
+        cos(ϕ_obs),
+        0.0
+    ]
+
+    return n, p, q
+end
+```
+ 
+* Compute $h_+$ and $h_\times$ 
+
+  - We compute $h_+$ in terms of the polarization bases vectors as $h_+ = (p_i * p_j - q_i * q_j) * H_{ij}$
+  - We compute $h_\times$ in terms of the polarization bases vectors as $h_\times = (p_i * q_j + q_i * p_j) * H_{ij}$
+
+```julia
+function Compute_h₊_hₓ(Qdd; θ_obs = 0.0, ϕ_obs = 0.0, D = 1.0)
+    _, p, q = Observer_Basis(θ_obs, ϕ_obs)
+    N = size(Qdd, 3)
+    
+    h₊ = zeros(N)
+    hₓ = zeros(N)
+
+    for k in 1:N
+        H = (2/D) .* Qdd[:, :, k]
+
+        h₊[k] = sum(
+            (p[i] * p[j] - q[i] * q[j]) * H[i, j]
+            for i in 1:3, j in 1:3
+        )
+
+        hₓ[k] = sum(
+            (p[i] * q[j] + q[i] * p[j]) * H[i, j]
+            for i in 1:3, j in 1:3
+        )
+    end
+
+    return h₊, hₓ
+end
+```
+
+To summarize, we implement everything in a single small function `nk_quadrupole_waveform`, which takes as input our geodesic `soln`, the spin of the central black hole `a`, the mass of the smaller black hole `μ = 1.0`, and the location of the observer `θ_obs = 0.0, ϕ_obs = 0.0, D = 1.0`:
+
+```julia
+function nk_quadrupole_waveform(soln; a, μ = 1.0, θ_obs = 0.0, ϕ_obs = 0.0, D = 1.0)
+    
+    t, orbit = Soln_to_Source(soln; a = a)
+    dt = assert_uniform_time(t)
+    Q = Calculate_Quadrupole_Tensor(orbit; μ = μ)
+    Q̇̇ = Calculate_Q_ddot(Q, dt)
+    h₊, hₓ = Compute_h₊_hₓ(Q̇̇; θ_obs = θ_obs, ϕ_obs = ϕ_obs, D = D)
+
+    return t, h₊, hₓ, Q, Q̇̇
+end 
+```
+
+In practice, we use this function simply as follows: 
+
+```julia
+t, h₊, hₓ, Q, Qdd = nk_quadrupole_waveform(true_solution; a = 0.9, μ = 1.0, θ_obs = 0.0, ϕ_obs = 0.0, D = 1.0)
+```
+
+It's worth running a few sanity checks to ensure our waveform generation scheme makes sense: 
+
+1. Quadrupole Tensor is STF: Symmetric & Trace-Free
+2. Face-On Projection Check ($\theta_{obs}=0, \phi_{obs}=0$)
+3. Circular, Equatorial Orbit Gravitational Waveform
+4. Periapsis Radiation Burst Check
+5. Varying Observer Inclination for Circular, Equatorial Orbit
+
+What is the first check about? The Quadrupole Tensor is defined as: 
+
+$$Q_{ij} = I_{ij} - \frac{1}{3}\delta_{ij}I_{kk}$$
+
+where $I_{kk} = I_{xx} + I_{yy} + I_{zz}$ is the trace and $\delta_{ij}$ turns on the trace subtraction only for diagonal entries: 
+
+$$
+\begin{pmatrix}
+I_{xx} - \frac{1}{3}(I_{xx} + I_{yy} + I_{zz}) & I_{xy} & I_{xz} \\
+I_{yx} & I_{yy} - \frac{1}{3}(I_{xx} + I_{yy} + I_{zz}) & I_{yz} \\ 
+I_{zx} & I_{zy} & I_{zz} - \frac{1}{3}(I_{xx} + I_{yy} + I_{zz}) & I_{yz} \\  \\ 
+\end{pmatrix}
+$$
