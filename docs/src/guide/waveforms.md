@@ -326,3 +326,12 @@ To check that the Quadrupole and its second derivative is STF, we do:
         println("max |Qdd-Qddᵀ|= ", symQdd)
     end
     ```
+    The output is, as expected, numerically zero, showing that the quadrupole tensor and its derivatives are indeed symmetric and traceless. 
+    ```@repl
+    max |tr(Q)|   = 1.1368683772161603e-13
+    max |tr(Qdd)| = 5.5164206536062466e-15
+    max |Q-Qᵀ|    = 0.0
+    max |Qdd-Qddᵀ|= 0.0
+    ```
+
+
