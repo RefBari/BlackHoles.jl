@@ -294,7 +294,6 @@ To check that the Quadrupole and its second derivative is STF, we do:
 
 !!! details "Quadrupole Tensor Sanity Checks"
 
-    ````
     To calculate the trace, we simply take: 
     $$tr[Q] = Q_{xx}+Q_{yy}+Q_{zz}$$
     In practice, of course, there will be not one quadrupole tensor, but -- if you have, say, 5000 time steps -- _5000_ quadrupole tensors, each evaluated at a given time step: 
@@ -319,4 +318,3 @@ To check that the Quadrupole and its second derivative is STF, we do:
         println("max |Qdd-Qddᵀ|= ", symQdd)
     end
     ```
-    ````
