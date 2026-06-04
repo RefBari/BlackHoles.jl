@@ -290,7 +290,8 @@ I_{zx} & I_{yy} & I_{zz} - \frac{1}{3}(I_{xx} + I_{yy} + I_{zz}) \\
 \end{pmatrix}
 $$
 
-To check that the Quadrupole and its second derivative is STF, we do: 
+To check that the Quadrupole and its second derivative is STF, we do:
+
 !!! details "Quadrupole Tensor Sanity Checks"
 
 ````
