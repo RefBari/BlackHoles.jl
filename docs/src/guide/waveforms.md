@@ -318,3 +318,27 @@ To check that the Quadrupole and its second derivative is STF, we do:
         println("max |Qdd-Qddᵀ|= ", symQdd)
     end
     ```
+
+For our next sanity check, we would like to ensure that the gravitational waveform reproduces a known equation: 
+
+!!! details "Z-Axis Observer Radiation"
+    For an observer on the z-axis, we have the following observer frame: 
+    ```math 
+    \hat p = (1,0,0), \hat q = (0, 1, 0), \hat n = (0, 0, 1)
+    ```
+    Employing the relation:
+    ```math
+    h_+ = \Sigma_{i=1}^{3} \Sigma_{j=1}^{3} (p_i p_j - q_i q_j) * h_{ij}
+    ```
+    We can expand this as follows: 
+    ```math
+    h_+ = (p_x p_x - q_x q_x) h_{xx} + (p_x p_y - q_x q_y) h_{xy} + (p_x p_z - q_x q_z) h_{xz}
+        + (p_y p_x - q_y q_x) h_{yx} + (p_y p_y - q_y q_y) h_{yy} + (p_y p_z - q_y q_z) h_{yz}
+        + (q_z p_x - q_z q_x) h_{zx} + (p_z p_y - q_z q_y) h_{zy} + (p_z p_z - q_z q_z) h_{zz}
+    ```
+    Clearly, neither $p$ nor $q$ has a $z$-component, so there will be no radiation detected in the z-direction, and we find (after plugging in that $p_x = 1$ and $q_y = 1$) that 
+    ```math
+    h_+ = h_{xx} - h_{yy}
+    ```
+
+cxv
