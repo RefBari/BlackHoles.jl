@@ -293,24 +293,33 @@ $$
 To check that the Quadrupole and its second derivative is STF, we do: 
 
 !!! details "Quadrupole Tensor Sanity Checks"
-    To calculate the trace, we simply take: 
-    $$tr[Q] = Q_{xx}+Q_{yy}+Q_{zz}$$
-    In practice, of course, there will be not one quadrupole tensor, but -- if you have, say, 5000 time steps -- _5000_ quadrupole tensors, each evaluated at a given time step: 
-    $$tr[Q(t_i)] = Q_{xx}(t_i)+Q_{yy}(t_i)+Q_{zz}(t_i)$$
-    $Q$, the quadrupole tensor, is usually a 3x3 matrix. We keep track of the $k$-th timestep of $Q$ via `Q[i,j,k]` where `i,j` run over the $x,y,z$ coordinates, and $k$ runs from 1 to 5000 (because there are 5000 time steps from $t_i$ to $t_f$ in the simulation). The method `size(Q,3)` returns the size of the 3rd dimension of the tensor $Q$, which in this case is 5000. In general, the `size(A,i)` method returns the size of the $i$-th dimension of the tensor $A$. 
-    `trQ   = [Q[1,1,k] + Q[2,2,k] + Q[3,3,k] for k in 1:N]`
-    Thus, the trace of the quadrupole tensor is calculated as `trQ = [Q[1,1,k] + Q[2,2,k] + Q[3,3,k] for k in 1:N]`. To check that the tensor is symmetric, the `permutedims()` method is used, which calculates the transpose of a matrix. For instance, `permutedims(A, (2,1))` flips the 2nd and 1st axes of the $A$ tensor (exchanges the rows and columns) to give the transpose. In the case below, we employ `permutedims(Q, (2,1,3))` to swap the rows and columns of $Q$ whilst keeping the 3rd axes intact. 
-    
+
+    To calculate the trace, we simply take:
+
+    ```math
+    \operatorname{tr}[Q] = Q_{xx}+Q_{yy}+Q_{zz}
+    ```
+
+    In practice, if you have 5000 time steps, you have 5000 quadrupole tensors:
+
+    ```math
+    \operatorname{tr}[Q(t_i)] = Q_{xx}(t_i)+Q_{yy}(t_i)+Q_{zz}(t_i)
+    ```
+
+    `Q`, the quadrupole tensor, is usually a 3×3 matrix. We keep track of the
+    `k`-th timestep via `Q[i,j,k]`, where `i,j` run over the spatial coordinates
+    and `k` runs over timesteps.
+
     ```julia
     function tensor_sanity_checks(Q, Qdd)
         N = size(Q, 3)
-    
+
         trQ   = [Q[1,1,k] + Q[2,2,k] + Q[3,3,k] for k in 1:N]
         trQdd = [Qdd[1,1,k] + Qdd[2,2,k] + Qdd[3,3,k] for k in 1:N]
-    
+
         symQ   = maximum(abs.(Q .- permutedims(Q, (2,1,3))))
         symQdd = maximum(abs.(Qdd .- permutedims(Qdd, (2,1,3))))
-    
+
         println("max |tr(Q)|   = ", maximum(abs.(trQ)))
         println("max |tr(Qdd)| = ", maximum(abs.(trQdd)))
         println("max |Q-Qᵀ|    = ", symQ)
