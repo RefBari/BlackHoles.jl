@@ -293,15 +293,19 @@ $$
 To check that the Quadrupole and its second derivative is STF, we do:
 
 !!! details "Quadrupole Tensor Sanity Checks"
-
     To calculate the trace, we simply take: 
-    $$tr[Q] = Q_{xx}+Q_{yy}+Q_{zz}$$
+    ```math 
+    tr[Q] = Q_{xx}+Q_{yy}+Q_{zz}
+    ```
     In practice, of course, there will be not one quadrupole tensor, but -- if you have, say, 5000 time steps -- _5000_ quadrupole tensors, each evaluated at a given time step: 
-    $$tr[Q(t_i)] = Q_{xx}(t_i)+Q_{yy}(t_i)+Q_{zz}(t_i)$$
+    ```math
+    tr[Q(t_i)] = Q_{xx}(t_i)+Q_{yy}(t_i)+Q_{zz}(t_i)
+    ```
     $Q$, the quadrupole tensor, is usually a 3x3 matrix. We keep track of the $k$-th timestep of $Q$ via `Q[i,j,k]` where `i,j` run over the $x,y,z$ coordinates, and $k$ runs from 1 to 5000 (because there are 5000 time steps from $t_i$ to $t_f$ in the simulation). The method `size(Q,3)` returns the size of the 3rd dimension of the tensor $Q$, which in this case is 5000. In general, the `size(A,i)` method returns the size of the $i$-th dimension of the tensor $A$. 
-    `trQ   = [Q[1,1,k] + Q[2,2,k] + Q[3,3,k] for k in 1:N]`
+    ```math
+    trQ   = [Q[1,1,k] + Q[2,2,k] + Q[3,3,k] for k in 1:N]`
+    ```
     Thus, the trace of the quadrupole tensor is calculated as `trQ = [Q[1,1,k] + Q[2,2,k] + Q[3,3,k] for k in 1:N]`. To check that the tensor is symmetric, the `permutedims()` method is used, which calculates the transpose of a matrix. For instance, `permutedims(A, (2,1))` flips the 2nd and 1st axes of the $A$ tensor (exchanges the rows and columns) to give the transpose. In the case below, we employ `permutedims(Q, (2,1,3))` to swap the rows and columns of $Q$ whilst keeping the 3rd axes intact. 
-    
     ```julia
     function tensor_sanity_checks(Q, Qdd)
         N = size(Q, 3)
@@ -339,6 +343,30 @@ For our next sanity check, we would like to ensure that the gravitational wavefo
     Clearly, neither $p$ nor $q$ has a $z$-component, so there will be no radiation detected in the z-direction, and we find (after plugging in that $p_x = 1$ and $q_y = 1$) that 
     ```math
     h_+ = h_{xx} - h_{yy}
+    ```
+    Similarly, the $h_\times$ radiation is given by 
+    ```math
+    h_\times = (p_i q_j + q_i p_j)h_{ij}
+    ```
+    Think about why only $h_{xy}$ components survive here: Because either $p_i$ or $q_i$ will be 0 for either only $x$ or $y$ components: 
+    ```math
+    (p_x q_x + q_x p_x) h_{xx} = 0, (p_y q_y + q_y p_y) h_{yy} = 0
+    ```
+    Thus, only mixed components would survive, so it turns out
+    ```math
+    h_{\times} = h_{xy} + h_{yx}
+    ```
+    Since the tensor $h_{xy} = h_{yx}$ is symmetric, that gives
+    ```math
+    h_{\times} = 2h_{xy}
+    ```
+    Thus, not withstanding constant factors, we obtain: 
+    ```math
+    h_+ = (1/D)*(\ddot Q_{xx} - \ddot Q_{yy})
+    ```
+    Likewise, we obtain
+    ```math
+    h_\times = (2/D)*(\ddot Q_{xy})
     ```
 
 cxv
