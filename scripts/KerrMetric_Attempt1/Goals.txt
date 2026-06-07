@@ -1,0 +1,1 @@
+Goal: Predict the Kerr Metric from the gravitational wave released by a Kerr geodesic. 
