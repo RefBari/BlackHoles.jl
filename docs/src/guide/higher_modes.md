@@ -14,14 +14,12 @@ $$g_{rr}=\frac{\Sigma}{\Delta}$$
 
 The nice thing about the Kerr metric is this: although it's not a diagonal matrix, finding it's inverse isn't hard! The off-diagonal component is slotted away on the upper right corner (and the metric is symmetric). Thus, for the metric
 
-$$
-g_{\mu\nu} = \begin{pmatrix}
+$$g_{\mu\nu} = \begin{pmatrix}
 g_{tt} & 0 & 0 & g_{t\phi} \\ 
 0 & \frac{\Sigma}{\Delta} & 0 & 0 \\ 
 0 & 0 & \Sigma & 0 \\ 
 g_{t\phi} & 0 & 0 & \frac{A}{\Sigma}\sin^2\theta
-\end{pmatrix}
-$$
+\end{pmatrix}$$
 
 To compute the inverse metric $g^{\mu\nu}$, we only need to invert the $t\phi$ block, because the $r\theta$ block is diagonal: 
 
@@ -29,23 +27,19 @@ $$g^{rr} = \frac{\Delta}{\Sigma}, g^{\theta\theta} = \frac{1}{\Sigma}$$
 
 To invert the $t\phi$ block: 
 
-$$
-\tilde g_{ab} = 
+$$\tilde g_{ab} = 
 \begin{pmatrix}
 g_{tt} & g_{t\phi} \\ 
 g_{t\phi} & g_{\phi\phi}
-\end{pmatrix}
-$$
+\end{pmatrix}$$
 
 The inverse of a $2x2$ matrix is simple: 
 
-$$
-\tilde g^{ab} = 
+$$\tilde g^{ab} = 
 \frac{1}{Det|\tilde g_{ab}|}\begin{pmatrix}
 g_{\phi\phi} & -g_{t\phi} \\ 
 -g_{t\phi} & g_{tt}
-\end{pmatrix}
-$$
+\end{pmatrix}$$
 
 It turns out 
 
@@ -58,3 +52,7 @@ $$g^{\phi\phi}=-\frac{1}{\Delta \sin^2\theta}g_{tt}$$
 $$g^{t\phi}=\frac{1}{\Delta \sin^2\theta}g_{t\phi}$$
 
 Of course, $g^{rr}$ and $g^{\theta\theta}$ are trivial and written upstairs. 
+
+Thus, here is the key idea: 
+!!! warning "The Big Idea"
+    For a given metric, $g^{rr}=0$ typically signals the horizon predicted by the metric. For Schwarzschild, $g^{rr}=0$ predicts $r=2M$. For Kerr, $g^{rr}=0$ predicts $r=M \pm \sqrt{M^2 - a^2}$. Thus, for the metric predicted by the neural network, one can solve $g^{rr}=0$ to find its predicted horizon. And then one can penalize the location of the predicted horizon against the true horizon using $(r_{H, predicted}-r_{H, true})^2$.
