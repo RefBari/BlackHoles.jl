@@ -56,3 +56,12 @@ Of course, $g^{rr}$ and $g^{\theta\theta}$ are trivial and written upstairs.
 Thus, here is the key idea: 
 !!! warning "The Big Idea"
     For a given metric, $g^{rr}=0$ typically signals the horizon predicted by the metric. For Schwarzschild, $g^{rr}=0$ predicts $r=2M$. For Kerr, $g^{rr}=0$ predicts $r=M \pm \sqrt{M^2 - a^2}$. Thus, for the metric predicted by the neural network, one can solve $g^{rr}=0$ to find its predicted horizon. And then one can penalize the location of the predicted horizon against the true horizon using $(r_{H, predicted}-r_{H, true})^2$.
+
+!!! danger "The Problem"
+    You gotta be careful: If you directly penalize against the true location of the horizon, you are injecting _a priori information_ about the true metric into the loss function. Thus, is there a way to leverage the outer Kerr event horizon as an inner boundary condition without explicitly specifying the location of the kerr horizon? Yes! But it is a tad bit subtle. Instead of penalizing the _location_ of the horizon, since that would give away information about the metric in the loss function, we simply penalize against the smoothness and continuity of the horizon. This will be discussed in the next blurb. 
+
+As I discussed in "The Problem", one must engineer a clever workaround to penalizing the exact location of the Kerr horizon. Instead, we shall penalize the smoothness and regularity of the horizon. In particular, say we solve for the roots of the predicted metric component: 
+
+$$g^{rr}_{pred}(r, \theta)=0$$
+
+Ideally, we will find a series of points $(r_i, \theta_i)$ which are the roots of this equation. Now, for a real black hole, the event horizon is a constant-r surface. Thus, ideally, all the $r_i$ values should be identical and furthermore, the radial value should be independent of theta: $r \neq r(\theta)$. To implement this in practice, we do the following: 
