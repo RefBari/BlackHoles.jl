@@ -31,7 +31,7 @@ makedocs(
             "Toy Model"    => "guide/toy_model.md"
         ],
         "Dissipative Dynamics" => [
-            "Theory: GENERIC Formalism"    => "guide/GENERIC.md",
+            # "Theory: GENERIC Formalism"    => "guide/GENERIC.md",
             "Simulating Orbits with GENERIC"  => "guide/dissipative_orbits.md",
             "Dissipative Case: Waves to Orbits" => "guide/full_inverse_problem.md"
         ],
