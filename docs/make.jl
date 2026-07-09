@@ -28,6 +28,7 @@ makedocs(
             "Comparison with Teukolsky Waveforms"        => "guide/higher_modes.md",
             "Fundamentals of Neural Networks"        => "guide/inverse_problem.md",
             "Sanity Checks"    => "guide/sanity_checks.md",
+            "Toy Model"    => "guide/toy_model.md"
         ],
         "Dissipative Dynamics" => [
             "Theory: GENERIC Formalism"    => "guide/GENERIC.md",
